@@ -1,7 +1,13 @@
 package com.example.demokangzhou.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demokangzhou.common.Result;
+import com.example.demokangzhou.entity.Users;
+import com.example.demokangzhou.service.IUsersService;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -15,4 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UsersController {
 
+    @Autowired
+    private IUsersService usersService;
+
+    // 接收 JSON 参数的 DTO
+    @Data
+    public static class LoginDTO {
+        private String username;
+        private String password;
+    }
+
+    @PostMapping("/register")
+    public Result<String> register(@RequestBody LoginDTO dto) {
+        return usersService.register(dto.getUsername(), dto.getPassword());
+    }
+
+    @PostMapping("/login")
+    public Result<Map<String, Object>> login(@RequestBody LoginDTO dto) {
+        return usersService.login(dto.getUsername(), dto.getPassword());
+    }
 }
