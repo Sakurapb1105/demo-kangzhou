@@ -3,6 +3,7 @@ package com.example.demokangzhou.controller;
 import com.example.demokangzhou.common.Result;
 import com.example.demokangzhou.entity.Users;
 import com.example.demokangzhou.service.IUsersService;
+import com.example.demokangzhou.utils.UserContext;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +40,19 @@ public class UsersController {
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody LoginDTO dto) {
         return usersService.login(dto.getUsername(), dto.getPassword());
+    }
+
+    /**
+     * 获取当前登录用户信息
+     */
+    @GetMapping("/info")
+    public Result<Users> getUserInfo() {
+
+        Long currentUserId = UserContext.getUserId();
+        Users user = usersService.getById(currentUserId);
+        if (user != null) {
+            user.setPasswordHash(null);
+        }
+        return Result.success("获取成功", user);
     }
 }
