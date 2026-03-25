@@ -31,12 +31,12 @@ public class UsersController {
         private String username;
         private String password;
     }
-
+    @CrossOrigin
     @PostMapping("/register")
     public Result<String> register(@RequestBody LoginDTO dto) {
         return usersService.register(dto.getUsername(), dto.getPassword());
     }
-
+    @CrossOrigin
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody LoginDTO dto) {
         return usersService.login(dto.getUsername(), dto.getPassword());
