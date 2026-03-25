@@ -43,10 +43,13 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
         // 1. 获取当前登录用户 ID
         Long currentUserId = UserContext.getUserId();
 
-        // 2. 去数据库查询所有 creator_id 是当前用户的项目
+        // 2. 查询条件
         LambdaQueryWrapper<Projects> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Projects::getCreatorId, currentUserId)
-                // 按照创建时间倒序排列
+
+        wrapper.eq(Projects::getCreatorId, currentUserId) // 条件 A：我是这个项目的创建者
+                .or() // 或者
+                // 条件 B：通过子查询，去 tasks 表里找找
+                .inSql(Projects::getId, "SELECT project_id FROM tasks WHERE assignee_id = " + currentUserId)
                 .orderByDesc(Projects::getCreatedAt);
 
         List<Projects> list = this.list(wrapper);

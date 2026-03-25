@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,5 +55,20 @@ public class UsersController {
             user.setPasswordHash(null);
         }
         return Result.success("获取成功", user);
+    }
+
+    /**
+     * 获取所有已注册用户（用于任务指派下拉框）
+     */
+    @CrossOrigin
+    @GetMapping("/list")
+    public Result<List<Users>> getAllUsers() {
+        // 查询所有用户
+        List<Users> users = usersService.list();
+        // 把密码数据清空
+        for (Users user : users) {
+            user.setPasswordHash(null);
+        }
+        return Result.success("获取成功", users);
     }
 }
